@@ -40,8 +40,11 @@ struct CheckDelta {
     args: Vec<String>,
 }
 
-static METADATA: LazyLock<Metadata> =
-    LazyLock::new(|| cargo_metadata::MetadataCommand::new().exec().unwrap());
+static METADATA: LazyLock<Metadata> = LazyLock::new(|| {
+    cargo_metadata::MetadataCommand::new()
+        .exec()
+        .expect("This command must be run in a workspace.")
+});
 
 fn main() {
     let Cli::CheckDelta(cli) = Cli::parse();
