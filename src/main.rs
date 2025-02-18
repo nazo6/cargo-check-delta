@@ -65,10 +65,11 @@ fn main() {
     }
 
     let walk = {
-        let mut rust_types = TypesBuilder::new();
-        rust_types.add("rust", "*.rs").unwrap();
-        rust_types.select("rust");
-        let rust_types = rust_types.build().unwrap();
+        let mut types = TypesBuilder::new();
+        types.add("rust", "*.rs").unwrap();
+        types.add("toml", "*.toml").unwrap();
+        types.select("all");
+        let rust_types = types.build().unwrap();
 
         let mut walk = WalkBuilder::new("./");
         walk.types(rust_types);
