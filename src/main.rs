@@ -35,6 +35,10 @@ struct CheckDelta {
     #[arg(short, long, default_value_t = false)]
     reset: bool,
 
+    /// db stale time (seconds)
+    #[arg(long, default_value_t = 3*60*60)]
+    stale_time: u64,
+
     /// Args passed to cargo subcommand
     #[arg(allow_hyphen_values = true)]
     args: Vec<String>,
@@ -61,7 +65,7 @@ fn main() {
     let mut new_db = Db::new();
 
     if let Ok(since_last_update) = new_db.last_update.duration_since(old_db.last_update) {
-        if since_last_update > std::time::Duration::from_secs(300) {
+        if since_last_update > std::time::Duration::from_secs(cli.stale_time) {
             log(cli.log_type, "db is too old, ignoring old db.");
             old_db = Db::new();
         }
