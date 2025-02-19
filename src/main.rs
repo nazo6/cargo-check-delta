@@ -107,7 +107,7 @@ fn main() {
         .chain(diff.different_value.iter())
         .chain(diff.other_only.iter())
     {
-        let changed_path = std::fs::canonicalize(changed_path).unwrap();
+        let changed_path = std::path::absolute(changed_path).unwrap();
         for package in &packages {
             let crate_path = package.manifest_path.parent().unwrap();
             if changed_path.starts_with(crate_path) {
