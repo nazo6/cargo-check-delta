@@ -84,6 +84,7 @@ dependencies = [
 name = "cargo-check-delta"
 version = "0.1.0"
 dependencies = [
+ "camino",
  "cargo_metadata",
  "clap",
  "ignore",

@@ -118,25 +118,42 @@ fn main() {
 
     log(
         cli.log_type,
-        &format!("changed_crates: {:?}", changed_crates),
+        &format!(
+            "changed_crates: {:?}, failed_crates: {:?}",
+            changed_crates, old_db.failed_crates
+        ),
     );
 
-    for changed_crate in changed_crates {
+    let mut status_code = None;
+
+    for changed_crate in changed_crates
+        .iter()
+        .map(|p| p.to_path_buf())
+        .chain(old_db.failed_crates.into_iter())
+    {
         let mut cmd = std::process::Command::new("cargo");
         cmd.arg(&cli.cargo_subcommand);
         cmd.args(&cli.args);
-        cmd.current_dir(changed_crate);
+        cmd.current_dir(&changed_crate);
 
         log(cli.log_type, &format!("running: {:?}", cmd));
 
         let status = cmd.status().unwrap();
 
-        if !status.success() {
-            std::process::exit(status.code().unwrap());
+        if status.success() {
+            new_db.failed_crates.retain(|x| *x != changed_crate);
+        } else {
+            status_code = status.code();
+            new_db.failed_crates.push(changed_crate);
+            break;
         }
     }
 
     new_db.save_to_path(db_path).unwrap();
+
+    if let Some(status_code) = status_code {
+        std::process::exit(status_code);
+    }
 }
 
 fn log(log_type: LogType, message: &str) {

@@ -4,12 +4,14 @@ use std::{
     time::SystemTime,
 };
 
+use cargo_metadata::camino::Utf8PathBuf;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Db {
     pub last_update: SystemTime,
     pub files: HashMap<String, SystemTime>,
+    pub failed_crates: Vec<Utf8PathBuf>,
 }
 
 impl Db {
@@ -17,6 +19,7 @@ impl Db {
         Self {
             last_update: SystemTime::now(),
             files: HashMap::new(),
+            failed_crates: Vec::new(),
         }
     }
 
