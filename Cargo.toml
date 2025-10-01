@@ -1,8 +1,10 @@
 [package]
 name = "cargo-check-delta"
+description = "A cargo subcommand to check only delta changes"
 version = "0.2.0"
 edition = "2024"
 repository = "https://github.com/nazo6/cargo-check-delta"
+license = "MIT"
 
 [dependencies]
 cargo_metadata = "0.19.1"
